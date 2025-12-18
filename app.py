@@ -1,86 +1,59 @@
 import streamlit as st
 
-from classical_ciphers.caesar import encrypt, decrypt
+from classical_ciphers.caesar import encrypt as caesar_encrypt, decrypt as caesar_decrypt
+from classical_ciphers.substitution import encrypt as sub_encrypt, decrypt as sub_decrypt
+from classical_ciphers.vigenere import encrypt as vig_encrypt, decrypt as vig_decrypt
 
-st.set_page_config(page_title="Kriptoloji Projesi", page_icon="🔐", layout="centered")
-
-st.caption("Streamlit UI + Sezar Şifreleme (Encrypt / Decrypt)")
-
-
-st.sidebar.header("Algoritma Seçimi")
-algo = st.sidebar.selectbox("Şifreleme Yöntemi", ["Sezar (Caesar)"], index=0)
-
-st.sidebar.divider()
-st.sidebar.subheader("Alfabe")
-alphabet_choice = st.sidebar.radio(
-    "Hazır alfabe seç",
-    ["İngilizce (A-Z)", "Türkçe (A-Z + ÇĞİÖŞÜ)", "Özel (Custom)"],
-    index=1,
-)
+st.set_page_config(page_title="Kriptoloji", page_icon="🔐")
 
 DEFAULT_EN = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DEFAULT_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
 
-if alphabet_choice == "İngilizce (A-Z)":
-    alphabet = DEFAULT_EN
-elif alphabet_choice == "Türkçe (A-Z + ÇĞİÖŞÜ)":
-    alphabet = DEFAULT_TR
-else:
-    alphabet = st.sidebar.text_input("Özel alfabet (benzersiz karakterlerden oluşsun)", value=DEFAULT_TR)
+st.sidebar.selectbox(
+    "Algoritma",
+    ["Sezar", "Substitution", "Vigenère"],
+    key="algo"
+)
 
-shift = st.sidebar.slider("Shift (Kaydırma) Değeri", min_value=0, max_value=max(1, len(alphabet) - 1), value=3)
+alphabet = st.sidebar.selectbox(
+    "Alfabe",
+    ["Türkçe", "İngilizce"],
+)
+alphabet = DEFAULT_TR if alphabet == "Türkçe" else DEFAULT_EN
+
+st.title(st.session_state.algo)
+
+if st.session_state.algo == "Sezar":
+    shift = st.slider("Shift", 0, len(alphabet) - 1, 3)
+
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", caesar_encrypt(p, shift, alphabet).text)
+
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", caesar_decrypt(c, shift, alphabet).text)
 
 
-if algo == "Sezar (Caesar)":
-    st.subheader("Sezar Şifreleme")
+elif st.session_state.algo == "Substitution":
+    key_alpha = st.text_input("Key Alphabet", value=alphabet)
 
-    tab1, tab2 = st.tabs(["🔒 Encrypt", "🔓 Decrypt"])
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", sub_encrypt(p, key_alpha, alphabet))
 
-    with tab1:
-        plaintext = st.text_area("Plaintext (Açık metin)", height=140, placeholder="Mesajını buraya yaz...")
-        colA, colB = st.columns(2)
-        with colA:
-            run_enc = st.button("Encrypt", type="primary", use_container_width=True)
-        with colB:
-            clear_enc = st.button("Temizle (Encrypt)", use_container_width=True)
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", sub_decrypt(c, key_alpha, alphabet))
 
-        if clear_enc:
-            st.session_state["enc_out"] = ""
-            st.rerun()
 
-        if run_enc:
-            try:
-                res = encrypt(plaintext, shift=shift, alphabet=alphabet)
-                st.session_state["enc_out"] = res.text
-            except Exception as e:
-                st.error(f"Hata: {e}")
+elif st.session_state.algo == "Vigenère":
+    key = st.text_input("Key")
 
-        enc_out = st.session_state.get("enc_out", "")
-        st.text_area("Ciphertext (Şifreli metin)", value=enc_out, height=140)
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", vig_encrypt(p, key, alphabet))
 
-        st.caption(f"Kullanılan alfabet: `{alphabet}` | Shift: `{shift}`")
-
-    with tab2:
-        ciphertext = st.text_area("Ciphertext (Şifreli metin)", height=140, placeholder="Şifreli mesajı buraya yapıştır...")
-        colC, colD = st.columns(2)
-        with colC:
-            run_dec = st.button("Decrypt", type="primary", use_container_width=True)
-        with colD:
-            clear_dec = st.button("Temizle (Decrypt)", use_container_width=True)
-
-        if clear_dec:
-            st.session_state["dec_out"] = ""
-            st.rerun()
-
-        if run_dec:
-            try:
-                res = decrypt(ciphertext, shift=shift, alphabet=alphabet)
-                st.session_state["dec_out"] = res.text
-            except Exception as e:
-                st.error(f"Hata: {e}")
-
-        dec_out = st.session_state.get("dec_out", "")
-        st.text_area("Plaintext (Açık metin)", value=dec_out, height=140)
-
-        st.caption(f"Kullanılan alfabet: `{alphabet}` | Shift: `{shift}`")
-
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", vig_decrypt(c, key, alphabet))
