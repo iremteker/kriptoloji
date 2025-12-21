@@ -14,7 +14,7 @@ DEFAULT_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
 
 algo = st.sidebar.selectbox(
     "Algoritma",
-    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route"]
+    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen"]
 )
 
 alphabet = st.sidebar.selectbox("Alfabe", ["Türkçe", "İngilizce"])
@@ -75,3 +75,28 @@ elif algo == "Route":
     c = st.text_area("Ciphertext ")
     if st.button("Decrypt"):
         st.text_area("Plaintext ", rt_decrypt(c, cols))
+
+elif algo == "Playfair":
+    key = st.text_input("Key")
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", pf_encrypt(p, key))
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", pf_decrypt(c, key))
+
+elif algo == "Polybius":
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", pb_encrypt(p))
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", pb_decrypt(c))
+
+elif algo == "Pigpen":
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        st.text_area("Ciphertext", pg_encrypt(p))
+    c = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        st.text_area("Plaintext ", pg_decrypt(c))
