@@ -21,8 +21,11 @@ DEFAULT_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
 
 algo = st.sidebar.selectbox(
     "Algoritma",
-    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen", "Hill", "AES (Demo)", "DES (Demo)"]
-)
+    ["Sezar", "Substitution", "Vigenère", 
+    "Rail Fence", "Columnar", "Route", 
+    "Playfair", "Polybius", "Pigpen", 
+    "Hill", "AES (Library)", "AES (Manual – Simplified)", "DES (Library)"]
+    )
 
 alphabet = st.sidebar.selectbox("Alfabe", ["Türkçe", "İngilizce"])
 alphabet = DEFAULT_TR if alphabet == "Türkçe" else DEFAULT_EN
@@ -137,7 +140,7 @@ if algo == "Hill":
             st.error(e)
 
 
-elif algo == "AES (Demo)":
+elif algo == "AES (Library)":
     key = gen_aes_key()
     st.text("AES-128 (CBC Mode)")
 
@@ -152,8 +155,14 @@ elif algo == "AES (Demo)":
         pt = aes_decrypt_cbc(key, iv, ct)
         st.text_area("Decrypted Plaintext", pt.decode())
 
+    elif algo == "AES (Manual – Simplified)":
+        st.text("Sadeleştirilmiş AES (kütüphanesiz)")
+        st.text("Bu implementasyon terminal üzerinden test edilmiştir.")
+        st.text("Dosya: manual_cipher/simplified_aes.py")
+        st.text("Test: python test_manual_aes.py")
 
-elif algo == "DES (Demo)":
+
+elif algo == "DES (Library)":
     key = gen_des_key()
     st.text("DES (CBC Mode)")
 
