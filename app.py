@@ -6,6 +6,9 @@ from classical_ciphers.vigenere import encrypt as vig_encrypt, decrypt as vig_de
 from classical_ciphers.rail_fence import encrypt as rf_encrypt, decrypt as rf_decrypt
 from classical_ciphers.columnar import encrypt as col_encrypt, decrypt as col_decrypt
 from classical_ciphers.route_cipher import encrypt as rt_encrypt, decrypt as rt_decrypt
+from classical_ciphers.playfair import encrypt as pf_encrypt, decrypt as pf_decrypt
+from classical_ciphers.polybius import encrypt as pb_encrypt, decrypt as pb_decrypt
+from classical_ciphers.pigpen import encrypt as pg_encrypt, decrypt as pg_decrypt
 
 st.set_page_config(page_title="Kriptoloji", page_icon="🔐")
 
