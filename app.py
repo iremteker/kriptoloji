@@ -9,6 +9,8 @@ from classical_ciphers.route_cipher import encrypt as rt_encrypt, decrypt as rt_
 from classical_ciphers.playfair import encrypt as pf_encrypt, decrypt as pf_decrypt
 from classical_ciphers.polybius import encrypt as pb_encrypt, decrypt as pb_decrypt
 from classical_ciphers.pigpen import encrypt as pg_encrypt, decrypt as pg_decrypt
+from classical_ciphers.hill import encrypt as hill_encrypt, decrypt as hill_decrypt
+
 
 st.set_page_config(page_title="Kriptoloji", page_icon="🔐")
 
@@ -17,7 +19,7 @@ DEFAULT_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
 
 algo = st.sidebar.selectbox(
     "Algoritma",
-    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen"]
+    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen", "Hill"]
 )
 
 alphabet = st.sidebar.selectbox("Alfabe", ["Türkçe", "İngilizce"])
@@ -103,3 +105,31 @@ elif algo == "Pigpen":
     c = st.text_area("Ciphertext ")
     if st.button("Decrypt"):
         st.text_area("Plaintext ", pg_decrypt(c))
+
+
+if algo == "Hill":
+    st.subheader("2x2 Key Matrix")
+
+    c1, c2 = st.columns(2)
+    with c1:
+        a = st.number_input("a", value=3)
+        b = st.number_input("b", value=3)
+    with c2:
+        c = st.number_input("c", value=2)
+        d = st.number_input("d", value=5)
+
+    key = [[a, b], [c, d]]
+
+    p = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        try:
+            st.text_area("Ciphertext", hill_encrypt(p, key))
+        except Exception as e:
+            st.error(e)
+
+    ciph = st.text_area("Ciphertext ")
+    if st.button("Decrypt"):
+        try:
+            st.text_area("Plaintext ", hill_decrypt(ciph, key))
+        except Exception as e:
+            st.error(e)
