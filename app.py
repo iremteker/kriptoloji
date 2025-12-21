@@ -10,6 +10,8 @@ from classical_ciphers.playfair import encrypt as pf_encrypt, decrypt as pf_decr
 from classical_ciphers.polybius import encrypt as pb_encrypt, decrypt as pb_decrypt
 from classical_ciphers.pigpen import encrypt as pg_encrypt, decrypt as pg_decrypt
 from classical_ciphers.hill import encrypt as hill_encrypt, decrypt as hill_decrypt
+from secure_comm.aes_des_lib import (gen_aes_key, gen_des_key, aes_encrypt_cbc, aes_decrypt_cbc, des_encrypt_cbc, des_decrypt_cbc)
+import base64
 
 
 st.set_page_config(page_title="Kriptoloji", page_icon="🔐")
@@ -19,7 +21,7 @@ DEFAULT_TR = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
 
 algo = st.sidebar.selectbox(
     "Algoritma",
-    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen", "Hill"]
+    ["Sezar", "Substitution", "Vigenère", "Rail Fence", "Columnar", "Route", "Playfair", "Polybius", "Pigpen", "Hill", "AES (Demo)", "DES (Demo)"]
 )
 
 alphabet = st.sidebar.selectbox("Alfabe", ["Türkçe", "İngilizce"])
@@ -133,3 +135,35 @@ if algo == "Hill":
             st.text_area("Plaintext ", hill_decrypt(ciph, key))
         except Exception as e:
             st.error(e)
+
+
+elif algo == "AES (Demo)":
+    key = gen_aes_key()
+    st.text("AES-128 (CBC Mode)")
+
+    plaintext = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        iv, ct = aes_encrypt_cbc(key, plaintext.encode())
+        st.session_state["aes"] = (key, iv, ct)
+        st.text_area("Ciphertext (Base64)", base64.b64encode(ct).decode())
+
+    if "aes" in st.session_state and st.button("Decrypt"):
+        key, iv, ct = st.session_state["aes"]
+        pt = aes_decrypt_cbc(key, iv, ct)
+        st.text_area("Decrypted Plaintext", pt.decode())
+
+
+elif algo == "DES (Demo)":
+    key = gen_des_key()
+    st.text("DES (CBC Mode)")
+
+    plaintext = st.text_area("Plaintext")
+    if st.button("Encrypt"):
+        iv, ct = des_encrypt_cbc(key, plaintext.encode())
+        st.session_state["des"] = (key, iv, ct)
+        st.text_area("Ciphertext (Base64)", base64.b64encode(ct).decode())
+
+    if "des" in st.session_state and st.button("Decrypt"):
+        key, iv, ct = st.session_state["des"]
+        pt = des_decrypt_cbc(key, iv, ct)
+        st.text_area("Decrypted Plaintext", pt.decode())
