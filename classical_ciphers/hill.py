@@ -1,5 +1,3 @@
-# classical_ciphers/hill.py
-
 import math
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

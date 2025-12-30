@@ -14,7 +14,7 @@ PIGPEN_MAP = {
     "Y": "╳•",  "Z": "╱╱•",
 }
 
-# ters sözlük
+
 REVERSE_MAP = {v: k for k, v in PIGPEN_MAP.items()}
 
 

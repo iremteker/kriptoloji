@@ -19,7 +19,7 @@ def _build_maps(alphabet: str, shift: int):
             seen.add(ch)
 
     if len(cleaned) < 2:
-        raise ValueError("Alphabet must contain at least 2 unique characters.")
+        raise ValueError("Alfabe en az 2 farklı karakter içermelidir.")
 
     alph = "".join(cleaned)
     n = len(alph)
@@ -38,7 +38,7 @@ def encrypt(plaintext: str, shift: int, alphabet: str) -> CaesarResult:
     """
     alph, enc_map, _ = _build_maps(alphabet, shift)
 
-    # Kullanıcı büyük harfli alfabe (veya karışık) sağlarsa küçük harf desteği de sağlanır.
+
     lower_alph = "".join(ch.lower() for ch in alph)
     _, enc_map_lower, _ = _build_maps(lower_alph, shift)
 
